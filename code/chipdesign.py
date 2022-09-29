@@ -81,6 +81,12 @@ NO_COMPONENTS = len(components)
 def rotate(c):
     return (c[1], c[0])
 
+def distance_squared(p1,p2):
+    return (p1[0]-p2[0])**2 + (p1[1]-p2[1])**2
+
+def get_center(comp):
+    return (comp[COMP_X]+comp[COMP_WIDTH]/2,comp[COMP_Y]+comp[COMP_HEIGHT]/2)
+
 def center(c):
     return (c[0]/2, c[1]/2)
     #return (math.ceil((c[0]/2) - 1) , math.ceil((c[1]/2) - 1))
@@ -144,9 +150,16 @@ def abs(x):
     return If(x >= 0,x,-x)
 
 # Due to limits on heat production the power components should be not too close: their centres should differ at least 16 in either the x direction or the y direction (or both).
-#heat_c = [ Or (abs((chip[0][COMP_X] + center(components[0])[0] - 1) - (chip[1][COMP_X] + center(components[1])[0] - 1)) >= HEAT_DIST , (abs((chip[0][COMP_Y] + center(components[0])[1] - 1) - (chip[1][COMP_Y] + center(components[1])[1]) - 1 ) >= HEAT_DIST)) ]
+# heat_c = [ Or (abs((chip[0][COMP_X] + center(components[0])[0] - 1) - (chip[1][COMP_X] + center(components[1])[0] - 1)) >= HEAT_DIST , (abs((chip[0][COMP_Y] + center(components[0])[1] - 1) - (chip[1][COMP_Y] + center(components[1])[1]) - 1 ) >= HEAT_DIST)) ]
+heat_c = []
+for pc1 in range(NO_POWER_COMPONENTS):
+    for pc2 in range(NO_POWER_COMPONENTS):
+        if (pc1 < pc2):
+            #for all pairs of power components, make sure the distance is bigger or equal to the heat distance (we square the HEAT_DIST instead of a square root in the )
+            heat_c.append(distance_squared(get_center(chip[pc1]),get_center(chip[pc2])) >= HEAT_DIST**2)
 
-basic_c = in_bounds_c + correct_size_c + overlap_c + power_c #+ heat_c
+
+basic_c = in_bounds_c + correct_size_c + overlap_c + power_c + heat_c
 
 # Solve the problem and print the model
 s = Solver()
