@@ -133,10 +133,12 @@ for c1 in range(NO_COMPONENTS):
 power_c = []
 for c in range(NO_POWER_COMPONENTS, NO_COMPONENTS):
     for pc in range(NO_POWER_COMPONENTS):
-            # Top and bottom
-            power_c.append(Or(Or([(And(chip[c][COMP_X] < chip[pc][COMP_X] + chip[pc][COMP_WIDTH], chip[c][COMP_X] + chip[c][COMP_WIDTH] > chip[pc][COMP_X], Or(chip[c][COMP_Y] + chip[c][COMP_HEIGHT] == chip[pc][COMP_Y], chip[c][COMP_Y] == chip[pc][COMP_Y] + chip[pc][COMP_HEIGHT]))) for pc in range(NO_POWER_COMPONENTS)]),
-                            Or([(And(chip[c][COMP_Y] < chip[pc][COMP_Y] + chip[pc][COMP_WIDTH], chip[c][COMP_Y] + chip[c][COMP_WIDTH] > chip[pc][COMP_Y], Or(chip[c][COMP_X] + chip[c][COMP_WIDTH] == chip[pc][COMP_X], chip[c][COMP_X] == chip[pc][COMP_X] + chip[pc][COMP_WIDTH]))) for pc in range(NO_POWER_COMPONENTS)])
-                            ))
+            # Top and Bottom
+            above_or_below = Or([(And(chip[c][COMP_X] < chip[pc][COMP_X] + chip[pc][COMP_WIDTH], chip[c][COMP_X] + chip[c][COMP_WIDTH] > chip[pc][COMP_X], Or(chip[c][COMP_Y] + chip[c][COMP_HEIGHT] == chip[pc][COMP_Y], chip[c][COMP_Y] == chip[pc][COMP_Y] + chip[pc][COMP_HEIGHT]))) for pc in range(NO_POWER_COMPONENTS)])
+            # Left or Right
+            left_or_right  = Or([(And(chip[c][COMP_Y] < chip[pc][COMP_Y] + chip[pc][COMP_HEIGHT], chip[c][COMP_Y] + chip[c][COMP_HEIGHT] > chip[pc][COMP_Y], Or(chip[c][COMP_X] + chip[c][COMP_WIDTH] == chip[pc][COMP_X], chip[c][COMP_X] == chip[pc][COMP_X] + chip[pc][COMP_WIDTH]))) for pc in range(NO_POWER_COMPONENTS)])
+            
+            power_c.append(Or(above_or_below, left_or_right))
 
 def abs(x):
     return If(x >= 0,x,-x)
