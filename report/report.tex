@@ -51,7 +51,7 @@ combination: they are not allowed to be put in the same truck.\\
 
 \newpage
 
-\subsection*{Solution:}
+\subsubsection*{Solution:}
 
 We start by defining a double list $trucks$ for the number of trucks ($ntrucks$) and the number of different pallets ($npallettypes$). \\
 This leads to a $n \times k$ list of integers where n is the number of trucks. \\
@@ -154,13 +154,45 @@ Again applying {\tt z3 trucks.py} yields the following result within 4 seconds: 
 
 {\tt [1, 0, 0, 2, 5] } \\
 
+This solution has $ 4 + 8 + 8 = 20 $ prittles
+
 \subsubsection*{Generalization}
 
-Our solution can be generalized by giving a different number for $ntrucks$ and $npallettypes$ and defining a different lookup list for the weights and required number of pallets per type.
+Our solution can be generalized by giving a different number for $ntrucks$ and $npallettypes and defining a different lookup list for the weights and required number of pallets per type.$
 
 \subsection*{Problem 2: Chip Design}
 
 \subsection*{Problem 3: Dinner}
 
+\subsubsection*{Solution:}
+
+We start by defining a datastructure for the dinner schedule, for this we use a number of $rounds$, $houses$ and $people$. where $rounds = 5, houses=5, people=10$ \\
+This leads to a list of $n \times m \times k$ of booleans where n is the number of rounds, m is the number of houses and k is the number of people. \\
+
+Which leads to the following output, where we get 5 of these arrays, one for every round.\\
+
+{\tt [1, 1, 1, 0, 0, 1, 0, 1, 0, 0]}
+
+{\tt [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+
+{\tt [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+
+{\tt [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]}
+
+{\tt [0, 0, 0, 1, 1, 0, 1, 0, 1, 1]}\\
+
+Where the row is a house, and everywhere where there is a 1 in the column that person is there.
+
+After we define this structure we use a calculation to find the house for a certain person, this is defined as follows: \\
+
+$personToHouseIndex = \lfloor p / (\lfloor people / houses \rfloor)\rfloor$ \\
+                   
+After defining the datastructure we start defining the constraints for the problem. \\
+
+First we define some basic constraints. \\
+
+\subsubsection*{Generalization}
+
 \end{document}
 
+]
