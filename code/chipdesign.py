@@ -65,7 +65,7 @@ def printlist(l):
 WIDTH = 30
 HEIGHT = 30
 # Distance between center of components because of heat
-HEAT_DIST = 16
+HEAT_DIST = 18
 
 # list of components, first element is width, second is height
 components = [(4, 3), (4, 3), (4, 5), (4, 6), (5, 20), (6, 9),
@@ -156,8 +156,7 @@ for pc1 in range(NO_POWER_COMPONENTS):
     for pc2 in range(NO_POWER_COMPONENTS):
         if (pc1 < pc2):
             #for all pairs of power components, make sure the distance is bigger or equal to the heat distance (we square the HEAT_DIST instead of a square root in the )
-            heat_c.append(distance_squared(get_center(chip[pc1]),get_center(chip[pc2])) >= HEAT_DIST**2)
-
+            heat_c.append(Or(abs(chip[pc1][COMP_X] - chip[pc2][COMP_X]) >= HEAT_DIST, abs(chip[pc1][COMP_Y] - chip[pc2][COMP_Y]) >= HEAT_DIST))
 
 basic_c = in_bounds_c + correct_size_c + overlap_c + power_c + heat_c
 
