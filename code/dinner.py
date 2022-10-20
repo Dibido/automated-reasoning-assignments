@@ -1,8 +1,7 @@
+from pprint import pprint
 from z3 import *
 
 # used for summing booleans
-
-
 def boolListToInt(l):
     return If(l, 1, 0)
 
@@ -82,20 +81,27 @@ for h in range(NO_HOUSES):
                d_c.append(sumBool([dinner_schedule[r][h][p] for r in range(NO_ROUNDS)]) < 2)
 
 # Solve the problem and print the model
+set_param(proof=True)
 s = Solver()
 #s.add(basic_c + a_c + c_c) # Possible with a + c
-#s.add(basic_c + a_c + d_c)  # Possible with a + d
+s.add(basic_c + a_c + d_c)  # Possible with a + d
 #s.add(basic_c + a_c + c_c + d_c) # Impossible with a + c + d
-s.add(basic_c + b_c + c_c + d_c) # Possible with b + c + d
+#s.add(basic_c + b_c + c_c + d_c) # Possible with b + c + d
 res = s.check()
-pp(res)
+pp(str(res) + "\\\\")
 
 if res == sat:
-    m = s.model()
-    # print(m)
-    r = [[[m.evaluate(If(dinner_schedule[r][h][p], 1, 0)) for p in range(NO_PEOPLE)]
-          for h in range(NO_HOUSES)]
+     m = s.model()
+     #print(m)
+     r = [[[m.evaluate(If(dinner_schedule[r][h][p], 1, 0)) for p in range(NO_PEOPLE)]
+              for h in range(NO_HOUSES)]
          for r in range(NO_ROUNDS)]
-    for i in range(NO_ROUNDS):
-        print("round:"+str(i))
-        pp(r[i])
+     for i in range(NO_ROUNDS):
+         print("round:"+str(i) + "\\\\")
+         for j in range(NO_HOUSES):
+          print("{\\tt ", end="")
+          print( r[i][j], end="")
+          print("}")
+          print()
+else:
+     pp(s.proof())
