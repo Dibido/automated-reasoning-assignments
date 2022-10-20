@@ -65,7 +65,7 @@ def printlist(l):
 WIDTH = 30
 HEIGHT = 30
 # Distance between center of components because of heat
-HEAT_DIST = 18
+HEAT_DIST = 17.0
 
 # list of components, first element is width, second is height
 components = [(4, 3), (4, 3), (4, 5), (4, 6), (5, 20), (6, 9),
@@ -146,18 +146,18 @@ for c in range(NO_POWER_COMPONENTS, NO_COMPONENTS):
             
             power_c.append(Or(above_or_below, left_or_right))
 
-def abs(x):
-    return If(x >= 0,x,-x)
+# def abs(x):
+#     return If(x >= 0,x,-x)
 
-def center(comp):
-    return (comp[COMP_X]+comp[COMP_WIDTH]/2,comp[COMP_Y]+comp[COMP_HEIGHT]/2)
+# def center(comp):
+#     return (comp[COMP_X]+comp[COMP_WIDTH]/2,comp[COMP_Y]+comp[COMP_HEIGHT]/2)
 
 # Due to limits on heat production the power components should be not too close: their centres should differ at least 16 in either the x direction or the y direction (or both).
 heat_c = []
 for pc1 in range(NO_POWER_COMPONENTS):
     for pc2 in range(NO_POWER_COMPONENTS):
         if (pc1 < pc2):
-            heat_c.append(Or(abs(center(chip[pc1])[0] - center(chip[pc2])[0]) >= HEAT_DIST, abs(center(chip[pc1])[1] - center(chip[pc2])[1]) >= HEAT_DIST))
+            heat_c.append(Or(((chip[pc1][COMP_X]*2 + (chip[pc1][COMP_WIDTH])) - (chip[pc2][COMP_X]*2 + chip[pc2][COMP_WIDTH])) >= HEAT_DIST*2, ((chip[pc1][COMP_Y]*2 + (chip[pc1][COMP_HEIGHT])) - (chip[pc2][COMP_Y]*2 + chip[pc2][COMP_HEIGHT])) >= HEAT_DIST*2))
 
 basic_c = in_bounds_c + correct_size_c + overlap_c + power_c + heat_c
 
@@ -172,6 +172,14 @@ if res == sat:
     chipmodel = [[m.evaluate(chip[comp][x]).as_long() for x in range(
         COMP_ATTRIBUTES)] for comp in range(NO_COMPONENTS)]
     pp(chipmodel)
+    print((chipmodel[0][COMP_X] + (chipmodel[0][COMP_WIDTH] / 2.0)) - chipmodel[1][COMP_X] + (chipmodel[1][COMP_WIDTH] / 2.0) )
+    print(chipmodel[0][COMP_Y])
+    print(chipmodel[0][COMP_HEIGHT])
+    print(chipmodel[1][COMP_Y])
+    print(chipmodel[1][COMP_HEIGHT])
+    print((chipmodel[0][COMP_Y] + (chipmodel[0][COMP_HEIGHT] / 2.0)))
+    print(chipmodel[1][COMP_Y] + (chipmodel[1][COMP_HEIGHT] / 2.0))
+    print((chipmodel[0][COMP_Y] + (chipmodel[0][COMP_HEIGHT] / 2.0)) - (chipmodel[1][COMP_Y] + (chipmodel[1][COMP_HEIGHT] / 2.0)) )
     printlist(chipmodel)
 else:
     pass

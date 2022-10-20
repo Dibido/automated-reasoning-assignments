@@ -12,7 +12,8 @@ def sumBool(l):
 
 NO_ROUNDS = 5
 NO_HOUSES = 5
-NO_PEOPLE = 10
+NO_PEOPLE = 10  # must be even
+NO_PEOPLE_PER_HOUSE = 5
 
 dinner_schedule = [[[Bool("R%s_H%s_P%s" % (r, h, p))  # could not use bool since sum does not take bools.
                      for p in range(NO_PEOPLE)]
@@ -26,7 +27,7 @@ one_house_at_a_time_c = [And([(sum(If(dinner_schedule[r][h][p], 1, 0) for h in r
                               for p in range(NO_PEOPLE)])for r in range(NO_ROUNDS)]
 
 # Precicely 5 people per occupied house, implies only 2 houses are occupied.
-five_people_per_house_c = [And([Or(sumBool(dinner_schedule[r][h]) == 5, sumBool(dinner_schedule[r][h]) == 0)
+five_people_per_house_c = [And([Or(sumBool(dinner_schedule[r][h]) == NO_PEOPLE_PER_HOUSE, sumBool(dinner_schedule[r][h]) == 0)
                                 for h in range(NO_HOUSES)])
                            for r in range(NO_ROUNDS)]
 
