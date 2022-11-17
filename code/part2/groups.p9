@@ -1,0 +1,5 @@
+formulas(assumptions).
+  x*(y*z) = (x*y)*z.
+  x*I = x.
+  x*inv(x) = I.
+end_of_list.

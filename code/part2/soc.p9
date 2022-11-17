@@ -1,0 +1,8 @@
+formulas(assumptions).
+  man(x) -> mortal(x).   % open formula with free variable x
+  man(socrates).
+end_of_list.
+
+formulas(goals).
+  mortal(socrates).
+end_of_list.
