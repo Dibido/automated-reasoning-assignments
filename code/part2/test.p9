@@ -1,0 +1,12 @@
+set(prolog_style_variables).
+
+formulas(assumptions).
+    l(x, [y:z])
+    % path([start, step : path, finish]) -> start != step.
+    % path(start, [step : path]).
+end_of_list.
+
+formulas(goals).
+    
+    % path(start, b, end)
+end_of_list.

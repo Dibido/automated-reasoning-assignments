@@ -1,0 +1,5 @@
+formulas(assumptions).
+end_of_list.
+
+formulas(goals).
+end_of_list.
