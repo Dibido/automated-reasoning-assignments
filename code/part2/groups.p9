@@ -4,11 +4,11 @@ formulas(assumptions).
   f(x,I) = x.                  % x ∗ I = x 
   f(x,inv(x)) = I.             % x ∗ inv(x) = I,
   % c)
-  op(700, infix, ">=" ).
-  op(500, infix, "+" ).
-  exp(x,1) = x.                % x^1 = x
-  (n >= 1) -> exp(x,n+1) = f(x,exp(x,n)).   % x^n+1 = x ∗ x^n for n >= 1
-  exp(x,2) = I.
+  exp1(x) = x.                % x^1 = x
+  exp2(x) = f(x,exp1(x)).   % x^n+1 = x ∗ x^n for n >= 1
+  exp3(x) = f(x,exp2(x)).   % x^n+1 = x ∗ x^n for n >= 1
+  exp4(x) = f(x,exp3(x)).   % x^n+1 = x ∗ x^n for n >= 1
+  exp4(x) = I.
 end_of_list.
 
 formulas(goals).
