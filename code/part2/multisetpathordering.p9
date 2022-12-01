@@ -1,0 +1,26 @@
+formulas(assumptions).
+order(x,y) <-> quasiorder(x,y) & -quasiorder(y,x). % order (⊳)
+% Define the relations quasiorder, order and equivalence (⊵ , ⊳,  ≡)
+quasiorder(x,x) <-> quasiorder(x,x). % reflexivity
+quasiorder(x,y) & quasiorder(y,z) <-> quasiorder(x,z). % transitivity
+equiv(x,y) <-> (quasiorder(x,y) & quasiorder(y,x)). % equivalence
+bigerthan(u(x),v(y)) <-> eqapprox(x,v) | ( order(u,v) & biggerthan(x,y) ) | (equiv(u,v) & biggerthanmul(x,y)). % s ≻ t 
+eqapprox(x,y) <-> biggerthan(x,y) | approx(x,y). % s ≿ t if and only if s ≻ t or s ≈ t
+approx(x,x) <-> true. % s ≈ t and s and t are both the same variable
+approx(u(x),v(y)) <-> equiv(u,v) & approxmatch(x,y). % s ≈ t
+
+approxmatch(u(x),v(y)) <-> approx(x,y). % ≈match , mutliset matching
+biggerthanmul(u(x),v(y)) <-> approxmatch(u,v) & biggerthan(x,y). % ≻mul, multiset
+biggerthanapprox(x,y) <-> approx(x,y) | biggerthan(x,y).
+
+biggerthan(c(x, y, u, v), b(f(x, y), b(u, u, u), g(v, b(x, y, u)))).
+biggerthan(b(f(x, y), g(x, y), f(x, g(z, u))), b(f(x, z), y, g(g(g(y, x), x), x))).
+%biggerthan(h(g(x, g(u, z)), c(x, y, x, z)), f(d(x, z), u)). % set 3rd inequality as goal
+biggerthan(h(d(f(x, y), g(u, v)), f(x, y)), f(c(u, x, v, y), g(y, x))).
+biggerthan(f(b(x, y, z), u), h(u, f(x, h(y, x)))).
+biggerthan(b(a(x, y, z), y, x), c(x, x, y, x)).
+end_of_list.
+
+formulas(goals).
+    biggerthan(h(g(x, g(u, z)), c(x, y, x, z)), f(d(x, z), u)). % set 3rd inequality as goal
+end_of_list.
