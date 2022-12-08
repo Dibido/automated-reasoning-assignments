@@ -50,25 +50,35 @@ STAY = 4
 list = [2,2,3,1]
 # Define the tile direction list for all tiles
 myvar = Int("myvar")
+myvar2 = Int("myvar2")
 # The direction for a tile is within the range of the direction range
 
-listInv = [[],[3],[0,1],[2]]
+listInv = [[3,4],[3,2],[0,1],[2,7]]
 
-def getIndex(list,x,target):
-    Or([Or([And(list[i][j] == target, x == i) for j in range(len(list[i]))])for i in range(len(list))])
-
-def plus(a,b):
-    return len(a)+b+3
+my_array = z3.Array('my_array', z3.IntSort(), z3.IntSort())
+for i in range(len(list)):
+    my_array = Store(my_array, i, list[i])
 
 
-validRoute_c = getIndex(listInv,myvar,3)
-#pp(validRoute_c)
+# list[myvar] == 3
+# validRoute_c = If(And(myvar ==2, myvar2 ==5),3,4) == 3
 
-constraints = And( validRoute_c)
+# constraints = And( validRoute_c)
+
+# Create an array with three elements
+list = Array('list', IntSort(), IntSort())
+
+# Update the value of the second element
+list = Store(list, 1, 4)
+
+list = simplify(list)
+
+print(list)
+
 #constraints = And(And(board_c), And(validDirection_c), And(endPosition_c) , And(dontSlideOnStart_c) , And(validRoute_c))
 
 s = Solver()
-s.add(constraints)
+#s.add(constraints)
 res = s.check()
 print(res)
 if res == sat:
@@ -91,3 +101,4 @@ where a route sarts in a start position and every next position is reachable fro
         list of size N + 1 (one for initial state)
 
 '''
+
