@@ -11,7 +11,7 @@ rules_input = ["c(x, y, u, v) ≻ b(f(x, y), b(u, u, u), g(v, b(x, y, u)))",
                 "b(a(x, y, z), y, x) ≻ c(x, x, y, x)",
                 ]
 
-test_input = ["f(g(h(x))) ≻ h(f(x))"]
+test_input = ["f(g(x)) ≻ g(f(x))"]
 
 parse_rules = """
 symbol = <letter>
@@ -32,12 +32,13 @@ for r in test_input:
 NO_RULES = len(rules)
 # pp(rules)
 # Define ordering to find
-test_symbols = ['f', 'g', 'h']
+test_symbols = ['f', 'g']
 NO_SYMBOLS = len(test_symbols)
 # symbols = ['a', 'b', 'c', 'd', 'f', 'g', 'h'] #, "x", "y", "z", "u", "v"] TODO: Do we need the ground terms?
 # NO_SYMBOLS = len(symbols)
 # encode the ordering using variables 〈f > g〉 for all f, g
-ordering = [[ Bool('%s >= %s' % (i, j) ) for i in test_symbols ] for j in test_symbols ]
+ordering = [[ Bool('%s_>=_%s' % (i, j) ) for i in test_symbols ] for j in test_symbols ]
+pp(ordering)
 # pp(ordering)
 # >= is reflexive (always f >= f).
 ordering_c1 = [ And( [ ordering[i][j] == True for i in range(NO_SYMBOLS)  if i == j ] ) for j in range(NO_SYMBOLS)]
@@ -59,14 +60,16 @@ for i in range(NO_SYMBOLS):
 # pp(ordering_c3)
 # for the subterms a and b in s and t:
 # for every relation # in { ≿ , > , = }, create a boolean variable〈a # b〉
-# TODO implement the subterms instead of just terms
+# TODO check if we have all subterms
 geq = [] # [ Bool('%s >= %s' % (l, r) ) for (l,r) in rules]
 gt = [] # [ Bool('%s > %s' % (l, r) ) for (l,r) in rules]
 eq = [] #[ Bool('%s = %s' % (l, r) ) for (l,r) in rules]
 def get_function_subterms(rule, r):
     l = []
     for i in range(1,len(rule)):
-        l.append(Bool('%s >= %s' % (rule[i], r)))
+        l.append(Bool('%s_>=_%s' % (str(rule[i]).replace(" ","_"), str(r).replace(" ","_"))))
+        gt.append(Bool('%s_>_%s' % (str(rule[i]).replace(" ","_"), str(r).replace(" ","_"))))
+        eq.append(Bool('%s_=_%s' % (str(rule[i]).replace(" ","_"), str(r).replace(" ","_"))))
         if len(rule[i]) > 1:
             for j in range(1, len(rule[i])):
                 l.append(get_function_subterms(rule[i], r))
@@ -76,16 +79,17 @@ def add_subterms(rule):
     l = rule[0] # get left
     r = rule[1] # get right
     if l[0] in test_symbols:
-        geq.append(Bool('%s >= %s' % (l, r)))
-        gt.append(Bool('%s > %s' % (l, r)))
-        eq.append(Bool('%s = %s' % (l, r)))
+        geq.append(Bool('%s_>=_%s' % (str(l).replace(" ","_"), str(r).replace(" ","_"))))
+        gt.append(Bool('%s_>_%s' % (str(l).replace(" ","_"), str(r).replace(" ","_"))))
+        eq.append(Bool('%s_=_%s' % (str(l).replace(" ","_"), str(r).replace(" ","_"))))
         geq.extend(get_function_subterms(l, r))
         geq.extend(get_function_subterms(r, l))
 
 for r in rules: # for all rules
     add_subterms(r)
-
 pp(geq)
+pp(gt)
+pp(eq)
 
 # TODO define >mul
 # We say that A ≻mul B if we can write A = A1 ∪ A2, B = B1 ∪ B2, A2 is non-empty, A1 ≈match B1 and for all b ∈ B2 there is a ∈ A2 such that a ≻ b
@@ -139,8 +143,12 @@ def mpo_c3b(rule):
 
 mpo_c3 = [ If(Or( mpo_c3a(rules[i]), mpo_c3b(rules[i]) ), eq[i] == True, True) for i in range(NO_RULES) ]
 
+# TODO implement these?
+# f a = b, then ¬〈a ] b〉 for all ] ∈ {LPO, sub, copy, lex}
+# otherwise, if a is a variable: ¬〈a ] b〉 for all ] ∈ {LPO, sub, copy, lex}
+
 # TODO require that top level inequalities hold (the rules)
-mpo_c4 = [ ]
+mpo_c4 = [geq[i] == True for i in range(0,NO_RULES)]
 
 constraints = ordering_c1 + ordering_c2 + ordering_c3 + mpo_c1 + mpo_c2 + mpo_c3 + mpo_c4
 
